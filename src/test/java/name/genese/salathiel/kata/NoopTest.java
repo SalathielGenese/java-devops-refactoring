@@ -1,6 +1,5 @@
 package name.genese.salathiel.kata;
 
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -14,12 +13,7 @@ public class NoopTest {
     private String greeting;
     private String name;
 
-    @ParameterType(".*")
-    public String username(String username) {
-        return name;
-    }
-
-    @Given("a name {username}")
+    @Given("a name {string}")
     public void aName(String name) {
         this.name = name;
     }

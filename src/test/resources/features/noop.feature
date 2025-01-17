@@ -1,10 +1,11 @@
 Feature: Noop
 
   Scenario Template: Test hello
-    Given a name <username>
+    Given a name "<name>"
     When hello method is called with name
     Then A hello + name string is returned
     Examples:
-      | username |
-      | Jules     |
-      | Charles   |
+      | name    |
+      | Jules   |
+      | Charles |
+      | Renee   |
