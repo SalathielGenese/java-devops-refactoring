@@ -5,7 +5,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import name.genese.salathiel.kata.domain.Operation;
-import name.genese.salathiel.kata.internal.AccountServiceDefault;
+import name.genese.salathiel.kata.service.AccountService;
+import name.genese.salathiel.kata.service.internal.AccountServiceDefault;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.math.BigDecimal;

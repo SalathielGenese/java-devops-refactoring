@@ -1,6 +1,6 @@
-package name.genese.salathiel.kata.internal;
+package name.genese.salathiel.kata.service.internal;
 
-import name.genese.salathiel.kata.AccountService;
+import name.genese.salathiel.kata.service.AccountService;
 import name.genese.salathiel.kata.domain.Operation;
 
 import java.math.BigDecimal;

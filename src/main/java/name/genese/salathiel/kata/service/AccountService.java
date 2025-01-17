@@ -1,4 +1,4 @@
-package name.genese.salathiel.kata;
+package name.genese.salathiel.kata.service;
 
 import name.genese.salathiel.kata.domain.Operation;
 
