@@ -1,40 +1,34 @@
 package name.genese.salathiel.kata;
 
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import name.genese.salathiel.kata.internal.AccountServiceDefault;
 
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class AccountServiceTest {
     private AccountService accountService;
-    private double amount;
 
-    @Before
-    public void setUp() {
-        accountService = new AccountServiceDefault();
+    @Given("an initial balance of {double}")
+    public void an_initial_balance_of(double amount) {
+        accountService = new AccountServiceDefault(BigDecimal.valueOf(amount));
     }
 
-    @Given("an amount {double}")
-    public void an_amount(double amount) {
-        this.amount = amount;
-    }
-
-    @When("doing a deposit")
-    public void doing_a_deposit() {
+    @When("doing a deposit of {double}")
+    public void doing_a_deposit_of(double amount) {
         accountService.deposit(amount);
     }
 
-    @Then("my balance is increased by {double}")
-    public void my_balance_is_increase_by(double amount) {
+    @When("make a withdrawal of {double}")
+    public void make_a_withdrawal_of(double amount) {
+        accountService.withdraw(amount);
     }
 
-    @When("make a withdrawal")
-    public void make_a_withdrawal() {
-        accountService.deposit(amount);
-    }
-
-    @Then("my balance is decreased by {double}")
-    public void my_balance_is_decrease_by(double amount) {
+    @Then("my new balance is {bigdecimal}")
+    public void my_new_balance_is(BigDecimal balance) {
+        assertEquals(accountService.getBalance().compareTo(balance), 0);
     }
 }
