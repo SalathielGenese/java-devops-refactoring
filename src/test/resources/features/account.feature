@@ -5,11 +5,11 @@ Feature: Account Operations
   - retrieve some or all of my savings
 
   Scenario: Save money
-    Given an amount "10"
+    Given an amount 10
     When doing a deposit
-    Then my balance is increase by "10"
+    Then my balance is increased by 10
 
   Scenario: Retrieve some or all of my savings
-    Given an amount "7"
+    Given an amount 7
     When make a withdrawal
-    Then my balance is decreased by "7"
+    Then my balance is decreased by 7
