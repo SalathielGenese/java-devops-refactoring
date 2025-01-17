@@ -4,12 +4,18 @@ Feature: Account Operations
   - save money
   - retrieve some or all of my savings
 
-  Scenario: Save money
-    Given an initial balance of 0
-    When doing a deposit of 10
-    Then my new balance is 10
+  Scenario Template: Save money
+    Given an initial balance of <initialAmount>
+    When doing a deposit of <deposit>
+    Then my new balance is <newBalance>
+    Examples:
+      | initialAmount | deposit | newBalance |
+      | 0             | 10      | 10         |
 
-  Scenario: Retrieve some or all of my savings
-    Given an initial balance of 10
-    When make a withdrawal of 7
-    Then my new balance is 3
+  Scenario Template: Retrieve some or all of my savings
+    Given an initial balance of <initialAmount>
+    When make a withdrawal of <withdrawal>
+    Then my new balance is <newBalance>
+    Examples:
+      | initialAmount | withdrawal | newBalance |
+      | 10            | 7          | 3          |

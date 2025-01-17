@@ -4,6 +4,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import name.genese.salathiel.kata.internal.AccountServiceDefault;
+import org.junit.jupiter.api.Assertions;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AccountServiceTest {
     private AccountService accountService;
+
+//    @ParameterType(".*")
+//    public BigDecimal newBalance(String amount) {
+//        return new BigDecimal(amount);
+//    }
 
     @Given("an initial balance of {double}")
     public void an_initial_balance_of(double amount) {
@@ -29,7 +35,6 @@ public class AccountServiceTest {
 
     @Then("my new balance is {bigdecimal}")
     public void my_new_balance_is(BigDecimal balance) {
-        //noinspection MisorderedAssertEqualsArguments
         assertEquals(accountService.getBalance().compareTo(balance), 0);
     }
 }
