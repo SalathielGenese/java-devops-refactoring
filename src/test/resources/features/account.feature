@@ -11,6 +11,7 @@ Feature: Account Operations
     Examples:
       | initialAmount | deposit | newBalance |
       | 0             | 10      | 10         |
+      | 4             | 9       | 13         |
 
   Scenario Template: Retrieve some or all of my savings
     Given an initial balance of <initialAmount>
@@ -19,3 +20,4 @@ Feature: Account Operations
     Examples:
       | initialAmount | withdrawal | newBalance |
       | 10            | 7          | 3          |
+      | 1             | 2          | -1         |
