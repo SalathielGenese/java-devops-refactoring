@@ -1,11 +1,15 @@
 package name.genese.salathiel.kata.internal;
 
 import name.genese.salathiel.kata.AccountService;
+import name.genese.salathiel.kata.domain.Operation;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public final class AccountServiceDefault implements AccountService {
+    private final List<Operation> statement = new LinkedList<>();
     private BigDecimal balance;
 
     public AccountServiceDefault(BigDecimal initial) {
@@ -35,6 +39,11 @@ public final class AccountServiceDefault implements AccountService {
         if (0 < BigDecimal.valueOf(amount).compareTo(balance))
             throw new IllegalArgumentException("insufficient balance");
         balance = balance.subtract(BigDecimal.valueOf(amount));
+    }
+
+    @Override
+    public List<Operation> getStatement() {
+        return List.copyOf(statement);
     }
 
     @Override

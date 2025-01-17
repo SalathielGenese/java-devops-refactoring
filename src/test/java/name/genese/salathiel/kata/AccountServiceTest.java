@@ -1,12 +1,15 @@
 package name.genese.salathiel.kata;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import name.genese.salathiel.kata.domain.Operation;
 import name.genese.salathiel.kata.internal.AccountServiceDefault;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,9 +79,42 @@ public class AccountServiceTest {
         assertEquals(0, accountService.getBalance().compareTo(balance));
     }
 
+    @Then("statement reflect:")
+    public void statement_reflect(DataTable dataTable) {
+        final var expected = dataTable.asMaps().stream()
+                .map(AccountServiceTest::toOperation)
+                .peek(operation -> {
+                    switch (operation) {
+                        case Operation.Initial _ -> {
+                        }
+                        case Operation.Deposit it -> accountService.deposit(it.amount().doubleValue());
+                        case Operation.Withdrawal it -> accountService.withdraw(it.amount().doubleValue());
+                    }
+                })
+                .toList();
+        final var statement = accountService.getStatement();
+
+        assertEquals(0, statement.getLast().balance().compareTo(accountService.getBalance()));
+        assertIterableEquals(
+                statement.stream().map(Operation::getClass).toList(),
+                expected.stream().map(Operation::getClass).toList());
+    }
+
     @Then("fail with {string}")
     public void fail_with(String message) {
         assertInstanceOf(IllegalArgumentException.class, whenException);
         assertEquals(whenException.getMessage(), message);
+    }
+
+    private static Operation toOperation(Map<String, String> operation) {
+        return switch (operation.get("type")) {
+            case "INITIAL" -> new Operation.Initial(
+                    new BigDecimal(operation.get("balance")), new BigDecimal(operation.get("amount")));
+            case "DEPOSIT" -> new Operation.Deposit(
+                    new BigDecimal(operation.get("balance")), new BigDecimal(operation.get("amount")));
+            case "WITHDRAWAL" -> new Operation.Withdrawal(
+                    new BigDecimal(operation.get("balance")), new BigDecimal(operation.get("amount")));
+            default -> throw new UnsupportedOperationException("Invalid operation type: " + operation.get("type"));
+        };
     }
 }
