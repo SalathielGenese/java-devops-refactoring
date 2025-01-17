@@ -14,11 +14,11 @@ public final class AccountServiceDefault implements AccountService {
 
     public AccountServiceDefault(BigDecimal initial) {
         Objects.requireNonNull(initial, "balance is null");
-        if (initial.compareTo(BigDecimal.ZERO) < 0) {
+        if (initial.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("negative balance");
-        }
 
         this.balance = initial;
+        statement.add(new Operation.Initial(balance, initial));
     }
 
     public AccountServiceDefault() {
@@ -29,16 +29,20 @@ public final class AccountServiceDefault implements AccountService {
     public void deposit(double amount) {
         if (amount <= 0)
             throw new IllegalArgumentException("negative amount");
-        balance = balance.add(BigDecimal.valueOf(amount));
+        final var val = BigDecimal.valueOf(amount);
+        balance = balance.add(val);
+        statement.add(new Operation.Deposit(balance, val));
     }
 
     @Override
     public void withdraw(double amount) {
+        final var val = BigDecimal.valueOf(amount);
         if (amount <= 0)
             throw new IllegalArgumentException("negative amount");
-        if (0 < BigDecimal.valueOf(amount).compareTo(balance))
+        if (0 < val.compareTo(balance))
             throw new IllegalArgumentException("insufficient balance");
-        balance = balance.subtract(BigDecimal.valueOf(amount));
+        balance = balance.subtract(val);
+        statement.add(new Operation.Withdrawal(balance, val));
     }
 
     @Override
