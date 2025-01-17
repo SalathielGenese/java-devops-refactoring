@@ -49,3 +49,18 @@ Feature: Account Operations
       | amount | message           |
       | -15    | "negative amount" |
       | -1     | "negative amount" |
+
+  Scenario: Track initial operation
+    Given an initial balance of 100
+    Then statement reflect:
+      | type    | amount | balance |
+      | INITIAL | 100    | 100     |
+
+  Scenario: Track initial, deposit and withdrawal operations
+    Given an initial balance of 100
+    Then statement reflect:
+      | type       | amount | balance |
+      | INITIAL    | 100    | 100     |
+      | DEPOSIT    | 100    | 200     |
+      | WITHDRAWAL | 150    | 50      |
+      | WITHDRAWAL | 50     | 0       |
