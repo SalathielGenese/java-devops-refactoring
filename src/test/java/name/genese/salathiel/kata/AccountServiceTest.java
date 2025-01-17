@@ -29,6 +29,7 @@ public class AccountServiceTest {
 
     @Then("my new balance is {bigdecimal}")
     public void my_new_balance_is(BigDecimal balance) {
+        //noinspection MisorderedAssertEqualsArguments
         assertEquals(accountService.getBalance().compareTo(balance), 0);
     }
 }

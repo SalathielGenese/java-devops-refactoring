@@ -17,12 +17,12 @@ public final class AccountServiceDefault implements AccountService {
 
     @Override
     public void deposit(double amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        balance = balance.add(BigDecimal.valueOf(amount));
     }
 
     @Override
     public void withdraw(double amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        balance = balance.subtract(BigDecimal.valueOf(amount));
     }
 
     @Override
