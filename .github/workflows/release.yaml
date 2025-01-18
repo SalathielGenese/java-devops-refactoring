@@ -4,27 +4,59 @@ on:
   push:
 
 jobs:
-  release-linux-amd64:
+  release:
+    strategy:
+      matrix:
+        include:
+        - os: ubuntu-latest
+          target: linux-amd64
+          suffix: ''
+#        - os: ubuntu-arm64
+#          target: linux-arm64
+#          suffix: ''
+        - os: macos-latest
+          target: macos-x86_64
+          suffix: ''
+        - os: macos-latest
+          target: macos-arm64
+          suffix: ''
+        - os: windows-latest
+          target: windows-x86_64
+          suffix: '.exe'
+        - os: windows-latest
+          target: windows-arm64
+          suffix: '.exe'
+
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '23'
-          distribution: 'graalvm'
-      - name: Build native & rename executable
-        run: |
-          mvn clean package -Pnative -pl console -am
-          SHORT_SHA="$(git rev-parse --short HEAD)"
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-          mv ./console/target/java-devops-refactoring-console \
-             ./console/target/java-devops-refactoring-console-linux-amd64-$SHORT_SHA
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            ./console/target/*linux-amd64-*
-          generate_release_notes: true
-          tag_name: ${{ env.SHORT_SHA }}
-          preserve_order: true
+    - uses: actions/checkout@v4
+
+    - name: Setup GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '23'
+        distribution: 'graalvm'
+        native-image-job-reports: 'true'
+
+    - name: Build native executable
+      shell: bash
+      run: |
+        SHORT_SHA="$(git rev-parse --short HEAD)"
+        echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+        mvn clean package -Pnative -pl console -am
+        mv ./console/target/java-devops-refactoring-console \
+           ./console/target/java-devops-refactoring-console-$SHORT_SHA-${{ matrix.target }}${{ matrix.suffix }}
+        ls -al ./console/target
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ./console/target/java-devops-refactoring-console-${{ env.SHORT_SHA }}-*
+        tag_name: ${{ env.SHORT_SHA }}
+        generate_release_notes: true
+        draft: false
+        prerelease: false
