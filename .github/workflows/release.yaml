@@ -17,13 +17,14 @@ jobs:
       - name: Build native & rename executable
         run: |
           mvn clean package -Pnative -pl console -am
-          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
           mv ./console/target/java-devops-refactoring-console \
              ./console/target/java-devops-refactoring-console-linux-amd64-$SHORT_SHA
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./console/target/java-devops-refactoring-console-linux-amd64-${{ env.SHORT_SHA }}
+            ./console/target/*linux-amd64-*
           generate_release_notes: true
           tag_name: ${{ env.SHORT_SHA }}
           preserve_order: true
