@@ -1,0 +1,29 @@
+name: Release Executable
+
+on:
+  push:
+
+jobs:
+  release-linux-amd64:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '23'
+          distribution: 'graalvm'
+      - name: Build native & rename executable
+        run: |
+          mvn clean package -Pnative -pl console -am
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          mv ./console/target/java-devops-refactoring-console \
+             ./console/target/java-devops-refactoring-console-linux-amd64-$SHORT_SHA
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./console/target/java-devops-refactoring-console-linux-amd64-${{ env.SHORT_SHA }}
+          generate_release_notes: true
+          tag_name: ${{ env.SHORT_SHA }}
+          preserve_order: true

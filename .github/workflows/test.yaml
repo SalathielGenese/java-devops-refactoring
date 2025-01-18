@@ -1,16 +1,16 @@
 name: Run Tests
-permissions:
-  checks: write
-  contents: read
 
 on:
   push:
   pull_request:
 
+permissions:
+  checks: write
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    # noinspection UndefinedAction
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 23
