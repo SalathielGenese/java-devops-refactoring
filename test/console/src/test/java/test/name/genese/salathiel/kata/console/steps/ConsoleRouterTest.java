@@ -2,10 +2,8 @@ package test.name.genese.salathiel.kata.console.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import name.genese.salathiel.kata.core.service.AccountService;
 import name.genese.salathiel.kata.console.service.ConsoleRouter;
-import name.genese.salathiel.kata.core.service.internal.AccountServiceDefault;
-import name.genese.salathiel.kata.console.service.internal.ConsoleRouterDefault;
+import name.genese.salathiel.kata.core.service.AccountService;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -18,12 +16,12 @@ public class ConsoleRouterTest {
 
     @Given("my new account")
     public void my_new_account() {
-        accountService = new AccountServiceDefault();
+        accountService = AccountService.from();
     }
 
     @Given("a console router with my account executed with input:")
     public void a_console_router_with_my_account_executed_with_input(String input) {
-        new ConsoleRouterDefault(accountService, new Scanner(input)).route();
+        ConsoleRouter.from(accountService, new Scanner(input)).route();
     }
 
     @Then("the balance is {bigdecimal}")

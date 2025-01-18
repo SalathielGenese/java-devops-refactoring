@@ -6,7 +6,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import name.genese.salathiel.kata.core.domain.Operation;
 import name.genese.salathiel.kata.core.service.AccountService;
-import name.genese.salathiel.kata.core.service.internal.AccountServiceDefault;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.math.BigDecimal;
@@ -29,7 +28,7 @@ public class AccountServiceTest {
     @Given("a balance of -1")
     public void a_balance_of_neg_1() {
         // @formatter:off
-        try { accountService = new AccountServiceDefault(BigDecimal.valueOf(-1)); }
+        try { accountService = AccountService.from(BigDecimal.valueOf(-1)); }
         catch (Exception e) { givenException = e; }
         // @formatter:on
     }
@@ -37,14 +36,14 @@ public class AccountServiceTest {
     @Given("a balance of null")
     public void a_balance_of_null() {
         // @formatter:off
-        try { accountService = new AccountServiceDefault(null); }
+        try { accountService = AccountService.from(null); }
         catch (Exception e) { givenException = e; }
         // @formatter:on
     }
 
     @Given("an initial balance of {bigdecimal}")
     public void an_initial_balance_of(BigDecimal initial) {
-        accountService = new AccountServiceDefault(initial);
+        accountService = AccountService.from(initial);
     }
 
     @When("making a withdrawal of {double}")
