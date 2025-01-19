@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 public record Menu() implements Command {
     @Override
     public Command visit(AccountService accountService, Consumer<Exception> onError, Scanner scanner) {
-        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.err.println("""
         
         1. Print Statement
