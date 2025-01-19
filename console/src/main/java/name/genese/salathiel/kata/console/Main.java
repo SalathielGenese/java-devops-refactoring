@@ -7,6 +7,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        System.err.println("""
+        WELCOME TO @SalathielGenese BANK
+          + https://salathiel.genese.name
+          + https://www.linkedin.com/in/salathielgenese
+          + https://github.com/SalathielGenese/java-devops-refactoring
+        
+        """);
         ConsoleRouter.from(
                 AccountService.from(),
                 e -> System.err.printf("   %s%n", e.getMessage()),
