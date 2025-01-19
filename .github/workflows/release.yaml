@@ -2,6 +2,8 @@ name: Release Executable
 
 on:
   push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -44,6 +46,13 @@ jobs:
     - name: Build native executable
       shell: bash
       run: |
+        TAG="${GITHUB_REF#refs/tags/}"
+        SEMVER_REGEX='^v?(\d+)\.(\d+)\.(\d+)(-[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*)(\+([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*))?$'
+        if [[ ! "$TAG" =~ $SEMVER_REGEX ]]; then
+          echo "Error: Tag $TAG does not match the semantic versioning format!"
+          exit 1
+        fi
+        
         ARCH_FLAGS=""
         case "${{ matrix.target }}" in
           "macos-arm64")
@@ -59,17 +68,18 @@ jobs:
 
         mvn clean package -Pnative -pl console -am -Dgraalvm.native.image.options="$ARCH_FLAGS"
 
-        SHORT_SHA="$(git rev-parse --short HEAD)"
-        echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+        # VERSION="$(git rev-parse --short HEAD)" # This works with push trigger
+        VERSION="${GITHUB_REF#refs/tags/v}"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
         mv ./console/target/java-devops-refactoring-console \
-           ./console/target/java-devops-refactoring-console-$SHORT_SHA-${{ matrix.target }}${{ matrix.suffix }}
+           ./console/target/java-devops-refactoring-console-$VERSION-${{ matrix.target }}${{ matrix.suffix }}
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          ./console/target/java-devops-refactoring-console-${{ env.SHORT_SHA }}-*
-        tag_name: ${{ env.SHORT_SHA }}
+          ./console/target/java-devops-refactoring-console-${{ env.VERSION }}-*
+        tag_name: ${{ env.VERSION }}
         generate_release_notes: true
         prerelease: false
         draft: false
