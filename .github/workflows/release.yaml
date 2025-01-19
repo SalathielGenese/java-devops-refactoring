@@ -11,9 +11,9 @@ jobs:
         - os: ubuntu-latest
           target: linux-amd64
           suffix: ''
-#        - os: ubuntu-arm64
-#          target: linux-arm64
-#          suffix: ''
+        - os: ubuntu-arm64
+          target: linux-arm64
+          suffix: ''
         - os: macos-latest
           target: macos-x86_64
           suffix: ''
@@ -44,12 +44,25 @@ jobs:
     - name: Build native executable
       shell: bash
       run: |
+        ARCH_FLAGS=""
+        case "${{ matrix.target }}" in
+          "macos-arm64")
+            ARCH_FLAGS="-H:CPUFeatures=ARM64 --target=aarch64-darwin"
+            ;;
+          "windows-arm64")
+            ARCH_FLAGS="-H:CPUFeatures=ARM64 -H:+SpawnIsolates"
+            ;;
+          "linux-arm64")  # Corrected to `aarch64-linux` for Linux ARM64
+            ARCH_FLAGS="-H:CPUFeatures=ARM64 --target=aarch64-linux"  # Fixed flag for Linux ARM64
+            ;;
+        esac
+
+        mvn clean package -Pnative -pl console -am -Dgraalvm.native.image.options="$ARCH_FLAGS"
+
         SHORT_SHA="$(git rev-parse --short HEAD)"
         echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-        mvn clean package -Pnative -pl console -am
         mv ./console/target/java-devops-refactoring-console \
            ./console/target/java-devops-refactoring-console-$SHORT_SHA-${{ matrix.target }}${{ matrix.suffix }}
-        ls -al ./console/target
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
@@ -58,5 +71,5 @@ jobs:
           ./console/target/java-devops-refactoring-console-${{ env.SHORT_SHA }}-*
         tag_name: ${{ env.SHORT_SHA }}
         generate_release_notes: true
-        draft: false
         prerelease: false
+        draft: false
